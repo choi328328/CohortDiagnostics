@@ -240,7 +240,7 @@ plotIncidenceRate <- function(data,
                           do.call(ggplot2::aes_string, aesthetics)) +
     ggplot2::xlab(xLabel) +
     ggplot2::ylab("Incidence Rate (/1,000 person years)") +
-    ggplot2::theme(legend.position = "top",
+    ggplot2::theme(legend.position = "right",
                    legend.title = ggplot2::element_blank(),
                    axis.text.x = if (showX) ggplot2::element_text(angle = 90, vjust = 0.5) else ggplot2::element_blank() )
   
@@ -262,14 +262,14 @@ plotIncidenceRate <- function(data,
     }
     if (stratifyByGender | stratifyByCalendarYear) {
       if (stratifyByAgeGroup) {
-        plot <- plot + ggplot2::facet_grid(databaseId+shortName~plotData$ageGroup, scales = scales)
+        plot <- plot + ggplot2::facet_grid(shortName~plotData$ageGroup, scales = scales)
       } else {
-        plot <- plot + ggplot2::facet_grid(databaseId+shortName~., scales = scales) 
+        plot <- plot + ggplot2::facet_grid(shortName~., scales = scales) 
       }
     }
     else
     {
-      plot <- plot + ggplot2::facet_grid(databaseId+shortName~., scales = scales) 
+      plot <- plot + ggplot2::facet_grid(shortName~., scales = scales) 
     }
   } else {
     if (stratifyByAgeGroup) {

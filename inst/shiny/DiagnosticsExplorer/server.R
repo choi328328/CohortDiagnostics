@@ -257,7 +257,7 @@ shiny::shinyServer(function(input, output, session) {
                                                      TRUE ~ .data$incidenceRate))
   })
   
-  output$incidenceRatePlot <- ggiraph::renderggiraph(expr = {
+  output$incidenceRatePlot <- renderUI({
     validate(need(length(input$databases) > 0, "No data sources chosen"))
     
     stratifyByAge <- "Age" %in% input$irStratification
@@ -268,16 +268,31 @@ shiny::shinyServer(function(input, output, session) {
     validate(need(!is.null(data), paste0("No data for this combination")),
              need(nrow(data) > 0, paste0("No data for this combination")))
     
-    plot <- plotIncidenceRate(data = data,
-                              cohortIds = NULL,
-                              databaseIds = NULL,
-                              stratifyByAgeGroup = stratifyByAge,
-                              stratifyByGender = stratifyByGender,
-                              stratifyByCalendarYear  = stratifyByCalendarYear,
-                              yscaleFixed =   input$irYscaleFixed)
-    return(plot)
+    
+    
+    
+    databaseIds <- unique(data$databaseId)
+    components <- list()
+    
+    for (databaseId in databaseIds) {
+      plotId <- paste0("plot", length(components))
+      subset <- data %>%
+        dplyr::filter(.data$databaseId == !!databaseId)
+      output[[plotId]] <-  ggiraph::renderggiraph({
+        plotIncidenceRate(data = subset,
+                          cohortIds = NULL,
+                          databaseIds = NULL,
+                          stratifyByAgeGroup = stratifyByAge,
+                          stratifyByGender = stratifyByGender,
+                          stratifyByCalendarYear  = stratifyByCalendarYear,
+                          yscaleFixed =   input$irYscaleFixed)
+      })
+      components[[length(components) + 1]] <- tags$strong(databaseId)
+      components[[length(components) + 1]] <- ggiraph::ggiraphOutput(plotId)
+    }
+    return(tagList(components))
   })
-  
+
   output$timeDisPlot <- ggiraph::renderggiraph(expr = {
     validate(need(length(input$databases) > 0, "No data sources chosen"))
     data <- getTimeDistributionResult(dataSource = dataSource,

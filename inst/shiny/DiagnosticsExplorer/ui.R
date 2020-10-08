@@ -288,8 +288,9 @@ bodyTabItems <- shinydashboard::tabItems(
                      shiny::checkboxInput("irYscaleFixed", "Use same y-scale across databases")
                    )
                  )),
-      shiny::htmlOutput(outputId = "hoverInfoIr"),
-      ggiraph::ggiraphOutput( outputId = "incidenceRatePlot", width = "100%", height = "100%" )
+      # shiny::htmlOutput(outputId = "hoverInfoIr"),
+      # ggiraph::ggiraphOutput( outputId = "incidenceRatePlot", width = "100%", height = "100%" )
+      uiOutput("incidenceRatePlot")
     )
   ),
   shinydashboard::tabItem(
