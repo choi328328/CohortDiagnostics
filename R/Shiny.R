@@ -69,7 +69,7 @@ launchDiagnosticsExplorer <- function(dataFolder = "data",
   }
   
   if (runOverNetwork) {
-    myIpAddress <- system("ipconfig", intern = TRUE)
+    myIpAddress <- system("ifconfig", intern = TRUE)
     myIpAddress <- myIpAddress[grep("IPv4", myIpAddress)]
     myIpAddress <- gsub(".*? ([[:digit:]])", "\\1", myIpAddress)
     options(shiny.port = port)
